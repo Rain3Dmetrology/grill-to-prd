@@ -1,0 +1,36 @@
+{
+  "goal": {
+    "purpose": "rxs-cc-plugins 命名空间与 API 对齐现状盘点（真实代码取证）",
+    "in_scope": ["命名空间体系", "C++ 标准", "导出宏/API 形态", "插件接口"],
+    "out_of_scope": ["算法正确性", "rxs-toolkit/algorithms 本体"]
+  },
+  "gates": [
+    { "id": "G1", "definition": "取证覆盖完整性", "acceptance_command": "grep 覆盖命名空间/标准/导出宏/插件接口 4 类", "evidence_level": "E1", "status": "done" },
+    { "id": "G2", "definition": "假设对账", "acceptance_command": "memory 假设 vs 真代码逐条对账", "evidence_level": "E2", "status": "done" },
+    { "id": "G3", "definition": "Phase 5 对齐判定", "acceptance_command": "用户确认 rxs-cc-plugins 是否属 rxs:: 改造目标", "evidence_level": "E3", "status": "pending" }
+  ],
+  "termination": { "mode": "达标即停", "n": 3 },
+  "priority": { "order": ["事实", "成本", "速度"], "tradeoffs": ["事实准确性优先"] },
+  "trusted_domains": ["github.com"],
+  "facts": [
+    { "id": "F1", "statement": "rxs-cc-plugins 全仓库无 rxs:: 命名空间引用", "evidence": "E1", "source": "grep 'namespace rxs|rxs::' 全仓库=0" },
+    { "id": "F2", "statement": "实际命名空间体系为 arsenal + czxEigen（czxDependence 工具库）", "evidence": "E1", "source": "czxTool.h:402,467" },
+    { "id": "F3", "statement": "C++ 标准为 C++17，非假设的 C++20", "evidence": "E1", "source": "CMakeLists.txt:4 set(CMAKE_CXX_STANDARD 17)" },
+    { "id": "F4", "statement": "无 RXS_EXPORT / __declspec 导出宏", "evidence": "E1", "source": "grep 全仓库=0" },
+    { "id": "F5", "statement": "无 ccStdPluginInterface / Q_PLUGIN_METADATA 标准插件接口", "evidence": "E1", "source": "mesh2cad/meshSlice grep=0" },
+    { "id": "F6", "statement": "仓库为独立 VS 工具集（.sln/.vcxproj + czxDependence），非 CloudCompare 标准插件形态", "evidence": "E1", "source": "目录结构" }
+  ],
+  "constraints": [
+    { "id": "C1", "statement": "强依赖 czxDependence 工具库（arsenal/czxEigen 命名空间）", "evidence": "E1" },
+    { "id": "C2", "statement": "mesh2cad 含 delaunay（Delaunay 三角化）+ pcd2stl（点云→STL）算法模块", "evidence": "E1" }
+  ],
+  "relations": [
+    { "from": "rxs_cc_plugins", "to": "arsenal命名空间", "type": "depends_on" },
+    { "from": "rxs_cc_plugins", "to": "czxEigen命名空间", "type": "depends_on" },
+    { "from": "arsenal命名空间", "to": "C1_czxDependence依赖", "type": "constrained_by" },
+    { "from": "rxs_cc_plugins", "to": "C++17标准", "type": "constrained_by" },
+    { "from": "rxs_cc_plugins", "to": "Phase5对齐判定G3", "type": "locked_by" }
+  ],
+  "user_stories": [],
+  "open_questions": ["rxs-cc-plugins 是否属 rxs:: 改造目标仓库？", "arsenal/czxEigen 是否计划并入 rxs::？"]
+}
