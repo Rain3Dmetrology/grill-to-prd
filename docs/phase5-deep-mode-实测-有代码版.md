@@ -81,4 +81,20 @@ graph LR
 
 ---
 
-*标签：全部取证 E1（grep 真代码）；假设对账 E2（memory 记录 vs 真代码）；G3 待用户裁决 E3。*
+## 九、裁决修正与新增发现（2026-08-25 用户改口）
+
+**修正**：用户裁决修正——**rxs-cc-plugins 属 rxs:: 改造目标**（原判"非目标"被改口）。G3 验收门状态从"待决"变"已裁决：是"。
+这个改口本身是治理规范"用户改主目标才可回退"的实例——**不可逆抉择的裁决权在用户，且裁决可修正**（B1 主目标可被用户显式指令改写）。
+
+**新增发现（E1，rxs-toolkit/czxDependence grep）**：**czxDependence 是跨仓库共享工具库**——rxs-toolkit 与 rxs-cc-plugins 各带一份副本，**均为 arsenal/czxEigen 命名空间**。rxs-toolkit 自身也是"双轨"：公共 API 层已 rxs::，内部工具库仍 arsenal/czxEigen。
+
+**由此产生的新不可逆抉择（建议 ADR）**：**rxs:: 化边界到哪一层？**
+- 方案 A：仅公共接口 rxs::，内部工具库保持 arsenal/czxEigen（= 当前 rxs-toolkit 状态，工程量最小）
+- 方案 B：全库 rxs::（含 czxDependence）——工程量最大，且 czxDependence 跨仓库共享，**两仓库必须同步改造防分叉**
+- 方案 C：中间态——rxs-cc-plugins 公共接口 rxs::，工具库保留（对齐 rxs-toolkit 双轨模式）
+
+三方案均满足 ADR 三触发条件（难逆转/无上下文惊讶/真实取舍），**这是 Phase 5 当前最需要用户裁决的不可逆抉择**。
+
+---
+
+*标签：全部取证 E1（grep 真代码）；假设对账 E2（memory 记录 vs 真代码）；G3 已用户裁决 E3（2026-08-25 修正）。*

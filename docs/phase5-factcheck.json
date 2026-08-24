@@ -7,7 +7,7 @@
   "gates": [
     { "id": "G1", "definition": "取证覆盖完整性", "acceptance_command": "grep 覆盖命名空间/标准/导出宏/插件接口 4 类", "evidence_level": "E1", "status": "done" },
     { "id": "G2", "definition": "假设对账", "acceptance_command": "memory 假设 vs 真代码逐条对账", "evidence_level": "E2", "status": "done" },
-    { "id": "G3", "definition": "Phase 5 对齐判定", "acceptance_command": "用户确认 rxs-cc-plugins 是否属 rxs:: 改造目标", "evidence_level": "E3", "status": "pending" }
+    { "id": "G3", "definition": "rxs-cc-plugins 是否属 rxs:: 改造目标", "acceptance_command": "用户裁决：是（2026-08-25 裁决修正，原判'非目标'被用户改口）", "evidence_level": "E3", "status": "done" }
   ],
   "termination": { "mode": "达标即停", "n": 3 },
   "priority": { "order": ["事实", "成本", "速度"], "tradeoffs": ["事实准确性优先"] },
@@ -32,5 +32,8 @@
     { "from": "rxs_cc_plugins", "to": "Phase5对齐判定G3", "type": "locked_by" }
   ],
   "user_stories": [],
-  "open_questions": ["rxs-cc-plugins 是否属 rxs:: 改造目标仓库？", "arsenal/czxEigen 是否计划并入 rxs::？"]
+  "open_questions": [
+    "czxDependence 为跨 rxs-toolkit/rxs-cc-plugins 共享工具库（各带副本，均 arsenal/czxEigen）——rxs:: 化边界：仅公共接口 vs 全库含工具库？",
+    "arsenal/czxEigen 并入 rxs:: 的同步改造方案（两仓库同改防分叉）"
+  ]
 }
