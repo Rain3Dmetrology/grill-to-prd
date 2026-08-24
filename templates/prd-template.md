@@ -1,4 +1,4 @@
-# PRD: [功能/项目名]
+# PRD: [需求/项目名]
 
 ## B1 主目标（冻结 · 不可变）
 - 目的（用户原话）：
@@ -15,46 +15,49 @@
 ## 结束条件三态
 - 达标即停 / 预算耗尽即停 / 最多 N 轮（默认 N=5）
 
-## 一、Introduction / 问题陈述
+## 一、问题陈述
 （要解决的问题，从用户视角）
 
 ## 二、Goals
 （可验证、可量化的目标，bullet 列表——"P95 延迟 < 200ms"而非"性能提升"）
 
-## 三、User Stories
-### US-001: [标题]
-**Description:** As a [user], I want [feature] so that [benefit].
+## 三、需求条目 / User Stories
+### [编号]: [标题]
+**Description:** 作为 [角色]，我想要 [能力]，以便 [收益]。
 **Acceptance Criteria:**
 - [ ] 可验证标准（非"工作正常"）
 
-## 四、Functional Requirements
+## 四、功能/能力要求
 - FR-1: ...
 
-## 五、Implementation Decisions（Deep 模式）
-（架构决策/API 契约/Schema 变更；不含文件路径。不可逆抉择须有 ADR 引用）
+## 五、决策记录（不可逆抉择 → 必有 ADR 引用）
+（关键决策 + 理由 + 取舍；不可逆抉择须引用 ADR。**代码领域可加**：接口/架构/选型决策，不含具体文件路径）
 
-## 六、Testing Decisions
-（seams 测试挂载点 = G 门验收命令的挂载位置；理想 seam 数 = 1）
-
-## 七、约束与边界收敛
+## 六、约束与边界收敛
 | 维度 | 收敛结果 | 证据等级 |
 |---|---|---|
 | 范围 | | |
 | 时间 | | |
 | 成本 | | |
 | 质量优先级排序 | | |
-| 技术约束 | | E1 |
+| 技术/领域约束 | | E1 |
 | 兼容性 | | E1 |
 | 可验证量化 goal | | |
 | 取舍优先级 | | |
 | 受信任检索域名 | | |
-| 性能要求 | | E1 |
+| 性能/质量要求 | | E1 |
 
-## 八、Non-Goals / Out of Scope
+## 七、Non-Goals / Out of Scope
 （明确不做什么）
 
-## 九、Success Metrics
+## 八、Success Metrics
 （如何衡量成功）
 
-## 十、Open Questions
+## 九、Open Questions
 （遗留待澄清项）
+
+---
+
+### 附：代码领域适配器的可选扩展章节
+> 挂载 codebase 适配器时，在 §五/§六 之间追加：
+> **Testing Seams**：测试挂载点（seam），优先复用已有 seam，理想数量=1；seam = G 门验收命令的挂载位置。
