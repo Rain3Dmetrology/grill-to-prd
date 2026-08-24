@@ -1,0 +1,5 @@
+# 固定 LF，防 CRLF 跨平台分发损坏（dmr 教训）
+*.py  text eol=lf
+*.sh  text eol=lf
+*.md  text eol=lf
+*.json text eol=lf
