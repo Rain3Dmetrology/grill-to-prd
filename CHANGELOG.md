@@ -3,6 +3,21 @@
 All notable changes to grill-to-PRD are documented here.
 本文件名不含版本号（R1 教训），版本演进仅记录于本文件。
 
+## [v0.2.1] - 2026-08-25
+
+### Changed（对齐审计裁决落地）
+- **Fast 模式（R1/R2）**：只强制收敛 3 项（目标/范围/验收标准），其余标「待定」进 open_questions；精简治理（只 B1 冻结 + 验收标准可验证，跳过 E0-E3/R13/台账）。
+- **核心边界（R3）**：核心 = 引导 + 双形态输出；领域适配层/专家团衔接/to-tickets = 可选挂载。
+
+### Added
+- codebase 适配器补充 deepwiki MCP 取证（快速索引 E1）+ seams 取证（D4）
+- 市场调研样例 `templates/market-sample-memory-tools.json`（D5，harness agent 记忆智能体热门工具盘点）
+- 对齐审计报告 `docs/对齐审计-v0.2.0.md`
+
+### Fixed
+- README/prd-template 文档漂移（通用化同步）
+- MEMORY.md 过时技术假设回写（C++17/PCL 1.10/Phase 5 完成）
+
 ## [v0.2.0] - 2026-08-25
 
 ### Changed
