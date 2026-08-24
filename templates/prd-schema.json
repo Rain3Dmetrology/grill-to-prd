@@ -1,0 +1,31 @@
+{
+  "_comment": "grill-to-PRD 结构化输出 schema（agent 照此生成 prd-[name].json）。双形态：本文件为结构层，与 prd-[name].md 叙事层互为补充。",
+  "goal": {
+    "purpose": "用户原话冻结的目的（B1，不可变）",
+    "in_scope": ["IN scope 条目"],
+    "out_of_scope": ["OUT of scope 条目"]
+  },
+  "gates": [
+    { "id": "G1", "definition": "单元/局部验收", "acceptance_command": "可执行验证命令（验收命令先行）", "evidence_level": "E1", "status": "todo" },
+    { "id": "G2", "definition": "集成验收", "acceptance_command": "...", "evidence_level": "E2", "status": "todo" },
+    { "id": "G3", "definition": "实机/Live 验收", "acceptance_command": "...", "evidence_level": "E3", "status": "todo" }
+  ],
+  "termination": { "mode": "达标即停 | 预算耗尽即停 | 最多N轮", "n": 5 },
+  "priority": { "order": ["质量", "成本", "速度"], "tradeoffs": ["冲突时保哪个的说明"] },
+  "trusted_domains": ["huggingface.co", "arxiv.org"],
+  "facts": [
+    { "id": "F1", "statement": "已取证的事实", "evidence": "E1", "source": "来源" }
+  ],
+  "constraints": [
+    { "id": "C1", "statement": "技术约束/兼容性/性能", "evidence": "E1" }
+  ],
+  "relations": [
+    { "from": "术语A", "to": "抉择B", "type": "depends_on" },
+    { "from": "抉择B", "to": "约束C", "type": "constrained_by" },
+    { "from": "抉择B", "to": "G2", "type": "locked_by" }
+  ],
+  "user_stories": [
+    { "id": "US-001", "title": "...", "as_a": "...", "i_want": "...", "so_that": "...", "acceptance_criteria": ["可验证标准"] }
+  ],
+  "open_questions": []
+}
