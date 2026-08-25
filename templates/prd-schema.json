@@ -1,17 +1,21 @@
 {
-  "_comment": "grill-to-PRD 结构化输出 schema（agent 照此生成 prd-[name].json）。双形态：本文件为结构层，与 prd-[name].md 叙事层互为补充。",
+  "_comment": "grill-to-PRD v0.3.0 结构化输出 schema（agent 照此生成 prd-[name].json）。双形态：本文件为结构层，与 prd-[name].md 叙事层互为补充。",
   "goal": {
     "purpose": "用户原话冻结的目的（B1，不可变）",
     "in_scope": ["IN scope 条目"],
     "out_of_scope": ["OUT of scope 条目"]
   },
   "gates": [
-    { "id": "G1", "definition": "单元/局部验收", "acceptance_command": "可执行验证命令（验收命令先行）", "evidence_level": "E1", "status": "todo" },
-    { "id": "G2", "definition": "集成验收", "acceptance_command": "...", "evidence_level": "E2", "status": "todo" },
-    { "id": "G3", "definition": "实机/Live 验收", "acceptance_command": "...", "evidence_level": "E3", "status": "todo" }
+    { "id": "G1", "definition": "单元/局部验收", "acceptance_command": "可执行验证命令（验收命令先行）", "mount_point": "验收挂载点（代码=seam/市场=数据源交叉验证点/生活=关键检查点）", "evidence_level": "E1", "status": "todo" },
+    { "id": "G2", "definition": "集成验收", "acceptance_command": "...", "mount_point": "...", "evidence_level": "E2", "status": "todo" },
+    { "id": "G3", "definition": "实机/Live 验收", "acceptance_command": "...", "mount_point": "...", "evidence_level": "E3", "status": "todo" }
   ],
   "termination": { "mode": "达标即停 | 预算耗尽即停 | 最多N轮", "n": 5 },
-  "priority": { "order": ["质量", "成本", "速度"], "tradeoffs": ["冲突时保哪个的说明"] },
+  "priority": {
+    "order": ["质量", "成本", "速度"],
+    "tradeoffs": ["冲突时保哪个的说明（取舍裁决表 → 台账 B4）"],
+    "framework": "MoSCoW | RICE | ICE | Kano | Hybrid（v0.3.0 prd-master 四框架按场景选用）"
+  },
   "trusted_domains": ["huggingface.co", "arxiv.org"],
   "facts": [
     { "id": "F1", "statement": "已取证的事实", "evidence": "E1", "source": "来源" }
@@ -25,7 +29,28 @@
     { "from": "抉择B", "to": "G2", "type": "locked_by" }
   ],
   "user_stories": [
-    { "id": "US-001", "title": "...", "as_a": "...", "i_want": "...", "so_that": "...", "acceptance_criteria": ["可验证标准"] }
+    {
+      "id": "US-001",
+      "title": "...",
+      "priority": "P0 | P1 | P2 | Must | Should | Could | Won't（v0.3.0 per-US 优先级）",
+      "invest": { "independent": true, "negotiable": true, "valuable": true, "estimable": true, "small": true, "testable": true },
+      "as_a": "...",
+      "i_want": "...",
+      "so_that": "...",
+      "acceptance_criteria": ["BDD Given-When-Then 或 Checklist 可验证标准（含 happy path + edge cases）"]
+    }
+  ],
+  "execution_decisions": [
+    { "id": "ED-1", "statement": "执行决策（代码=Implementation / 市场=执行策略 / 生活=实施方案）", "alternatives": ["≥2 备选方案（Alternatives Required）", "Pros", "Cons", "Decision"] }
+  ],
+  "verification_decisions": [
+    { "id": "VD-1", "statement": "验证决策（代码=Testing / 市场=验证方法 / 生活=验收方式）", "mount_point": "验收挂载点" }
+  ],
+  "adrs": [
+    { "id": "ADR-001", "title": "...", "context": "...", "decision": "...", "alternatives_considered": ["≥2 备选 + Pros/Cons/Decision（v0.3.0 强制）"], "consequences": "...", "status": "Proposed | Accepted | Deprecated" }
+  ],
+  "traceability_matrix": [
+    { "requirement": "US-001", "design_element": "...", "implementation": "...", "test_gate": "G1 验收命令" }
   ],
   "open_questions": []
 }

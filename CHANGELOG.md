@@ -3,6 +3,30 @@
 All notable changes to grill-to-PRD are documented here.
 本文件名不含版本号（R1 教训），版本演进仅记录于本文件。
 
+## [v0.3.0] - 2026-08-26
+
+### Changed（对齐 mattpocock 原教旨 + 五资产吸收）
+- **三段式架构声明（§1）**：wayfinder（规划器·超长任务）→ grilling（追问器·多轮设计树）→ to-spec（合成器·单次不追问），grill-to-PRD 为统一入口 + 治理胶水。认知纠偏：to-spec 是纯合成器（原文 disable-model-invocation + "Do NOT interview"）；wayfinder 是域无关规划器（原文 "domain-agnostic"）。
+- **追问轮次门禁（§3.1）**：frontier 空证明（全部未决决策逐条标注已 settle/待用户/待取证）+ 用户共识确认门 + 每轮格式对齐 grilling 原文（编号+推荐答案）+ 短任务豁免。
+- **pre-fact 前置（§3.2）**：每个 frontier 问题先自问"能否自己查"——能则先取证再提问，并行探索子代理不阻塞。
+- **wayfinder 规划（§3.4）**：超长任务入口（命名目的地→测绘前沿→决策票据地图→逐票据解决→本地 markdown tracker 轻量落地）。
+- **命名修正（§2）**：Deep/Fast → 深度/快速模式（追问强度分级，与领域无关）。
+- **prd-master 三条 Hard Rules（§0）**：No Vague Metrics / Problem Before Solution / INVEST Stories。
+- **优先级框架（§7 + 模板）**：MoSCoW/RICE/ICE/Kano + Hybrid 组合法替换简单 P0/P1/P2；落地三件套（per-US 优先级 + 取舍裁决表 + goal 可量化强制）。
+- **守卫与机检（§9）**：vibeguard 模式（规则/钩子/静态检查三层 + "错误信息=修复指令" + learn 闭环 5-Why→新守卫）。
+
+### Added
+- 领域适配器扩展至 6 个：新增**商业模式**与**日常生活**适配器 + 百科型事实源模式（§5 + domain-adapters.md）
+- 11 节 PRD 结构（prd-template.md，对齐 prd-master，按场景裁剪映射）+ BDD Given-When-Then/Checklist 验收双格式
+- ADR 模板升级：Alternatives Required（≥2 备选方案 + Pros/Cons/Decision，源自 technical-spec）
+- 需求追踪矩阵 REQ→Design→Impl→Tests（prd-template §十 + schema，to-tickets 上游输入）
+- 验收挂载点（seams 推广：代码=seam / 市场=数据源交叉验证点 / 生活=关键检查点）
+- prd-schema.json 新字段：gates.mount_point / priority.framework / user_stories.priority + invest / execution_decisions / verification_decisions / adrs.alternatives_considered / traceability_matrix
+
+### Notes
+- v0.4.0 候选架构（规划未实施）：skill-router 形态（routing.json 结构化路由 + 173 用例式回归基准 + field-journal 经验库）——源自 reverse-skill 范式
+- 诊断与洞察报告：`D:\Downloads\grill-to-PRD追问机制诊断与v0.3.0升级建议_2026-08-26.md`、`D:\Downloads\grill-to-PRD五资产对照调研与v0.3.0增补洞察_2026-08-26.md`
+
 ## [v0.2.1] - 2026-08-25
 
 ### Changed（对齐审计裁决落地）
