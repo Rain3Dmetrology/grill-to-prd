@@ -61,20 +61,35 @@ if ($SrcVersion -ne "未知" -and $DestVersion -ne "（未安装）" -and $SrcVe
     Write-Host "  [WARN] 版本漂移：源 $SrcVersion != 已装 $DestVersion，将覆盖为源版本" -ForegroundColor Yellow
 }
 
-# ---- 4. 复制（排除 .git） ----
-if (Test-Path $Dest) {
-    Remove-Item $Dest -Recurse -Force
+# ---- 4. 原子复制（临时目录 + 原子改名 + 失败回滚；对齐治理 R4 原子写） ----
+$TempDest = "$Dest.tmp"
+$BackupDest = "$Dest.bak"
+
+try {
+    # 4a. 复制到临时目录（不触碰现有安装，中途失败不影响旧版）
+    if (Test-Path $TempDest) { Remove-Item $TempDest -Recurse -Force }
+    New-Item -ItemType Directory -Path $TempDest -Force | Out-Null
+    Copy-Item -Path (Join-Path $Source "*") -Destination $TempDest -Recurse -Force
+
+    # 4b. 清理临时副本的 git 元数据（防双仓库混乱）
+    if (Test-Path (Join-Path $TempDest ".git")) { Remove-Item (Join-Path $TempDest ".git") -Recurse -Force }
+    if (Test-Path (Join-Path $TempDest ".gitattributes")) { Remove-Item (Join-Path $TempDest ".gitattributes") -Force }
+    if (Test-Path (Join-Path $TempDest ".gitignore")) { Remove-Item (Join-Path $TempDest ".gitignore") -Force }
+
+    # 4c. 原子替换：旧版移入 .bak，新版改名就位（同一卷 rename 原子）
+    if (Test-Path $BackupDest) { Remove-Item $BackupDest -Recurse -Force }
+    if (Test-Path $Dest) { Rename-Item $Dest $BackupDest }
+    Rename-Item $TempDest $Dest
+
+    # 4d. 成功：清理备份
+    if (Test-Path $BackupDest) { Remove-Item $BackupDest -Recurse -Force }
 }
-New-Item -ItemType Directory -Path $Dest -Force | Out-Null
-Copy-Item -Path (Join-Path $Source "*") -Destination $Dest -Recurse -Force
-if (Test-Path (Join-Path $Dest ".git")) {
-    Remove-Item (Join-Path $Dest ".git") -Recurse -Force
-}
-if (Test-Path (Join-Path $Dest ".gitattributes")) {
-    Remove-Item (Join-Path $Dest ".gitattributes") -Force
-}
-if (Test-Path (Join-Path $Dest ".gitignore")) {
-    Remove-Item (Join-Path $Dest ".gitignore") -Force
+catch {
+    # 4e. 失败回滚：清理临时目录；若新版未就位且旧版还在 .bak，恢复旧版
+    if (Test-Path $TempDest) { Remove-Item $TempDest -Recurse -Force -ErrorAction SilentlyContinue }
+    if (-not (Test-Path $Dest) -and (Test-Path $BackupDest)) { Rename-Item $BackupDest $Dest }
+    Write-Host "[ERROR] 安装失败，已回滚保留旧版: $($_.Exception.Message)" -ForegroundColor Red
+    exit 1
 }
 
 # ---- 5. 完成 ----

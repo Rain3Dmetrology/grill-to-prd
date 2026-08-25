@@ -3,6 +3,16 @@
 把模糊意图翻译成结构化 PRD。核心不是写文档，而是**动手前把话说透、把假设暴露、把验收门钉死、把边界收敛、把优先级排清**。遵守《人机协作 Loop 治理规范》v2.3。
 **通用定位**：**域无关**的需求引导引擎——软件开发、产品规划、市场商业、技术/模型选型、日常生活任意场景，也可作为专家/专家团的需求入口。
 
+## 30 秒上手（触发示例）
+
+| 场景 | 一句话触发 |
+|---|---|
+| 技术选型 | "用 grill-to-PRD 梳理一下我选 [X] 方案的需求与验收标准" |
+| 市场调研 | "帮我用 grill-to-PRD 把 [调研主题] 的需求边界和验收门理清楚" |
+| 生活决策 | "用 grill-to-PRD 帮我规划 [事项]，要目标、边界、怎么算成功" |
+
+触发后自动路由：复杂任务走**深度模式**（多轮追问 → frontier 空证明 → PRD），简单任务走**快速模式**（3-5 问字母选项 → 精简 PRD），超长任务先走 **wayfinder 规划**。产出均为 `prd-*.md` + `prd-*.json` 双形态。
+
 ## 三段式架构（v0.3.0 · 对齐 mattpocock/skills 原教旨）
 
 ```
@@ -23,8 +33,9 @@ grill-to-PRD = 统一入口 + 治理胶水（B1-B7 台账 / G1-G3 验收门 / E0
 
 > 深度/快速是**追问强度分级**，与领域无关；领域差异一律走适配层。
 
-## 核心能力（v0.3.0）
+## 核心能力（v0.3.1）
 
+- **分层内嵌治理（v0.3.1）**：§0 治理权威块分三层——稳定内核逐字内嵌（B1/B2/E0-E3/三态/R4/R7/Hard Rules）/ 高频演进条款引用摘要（R13 a-g 全条款）/ 阶段专属机制引用指向（R9 心跳/确认分级/触顶上报/M1-M11 由下游承担，防范围蔓延）
 - **追问质量三 Hard Rules**：No Vague Metrics（指标必须可量化）/ Problem Before Solution（先定义问题）/ INVEST Stories
 - **优先级框架**：MoSCoW / RICE / ICE / Kano + Hybrid 组合法；per-US 优先级（P0/P1/P2）+ 取舍裁决表 + goal 可量化强制
 - **PRD 结构**：11 节（对齐 prd-master，按场景裁剪映射）+ BDD Given-When-Then/Checklist 验收双格式
@@ -50,12 +61,20 @@ powershell -ExecutionPolicy Bypass -File .\install.ps1
 powershell -ExecutionPolicy Bypass -File .\install.ps1 -Target "C:\Users\<你>\ .workbuddy\skills"
 ```
 
-> 版本漂移防护（R1 教训）：install.ps1 每次安装会打印源版本（CHANGELOG 最新条目）与已安装副本版本；升级后重跑 install.ps1 即可同步。脚本相对路径调用，平台无关（WorkBuddy / Trae / Codex 通用）。
+> 版本漂移防护（R1 教训）：install.ps1 每次安装会打印源版本（CHANGELOG 最新条目）与已安装副本版本；升级后重跑 install.ps1 即可同步。**安装为原子替换**（临时目录 + 原子改名 + 失败回滚保留旧版，对齐治理 R4 原子写）。脚本相对路径调用，平台无关（WorkBuddy / Trae / Codex 通用）。
 
 ### 手动复制 / clone
 
 1. 复制本目录到你的 skill 目录（或 clone 独立仓库）。
 2. 脚本用**相对路径**调用，平台无关。
+
+## 维护契约（v0.3.1）
+
+grill-to-PRD 依赖两个外部活文档，**升级后须手动同步**：
+1. **《人机协作 Loop 治理规范》**（`人机协作loop治理规范.md`）：bump 版本时，比对 SKILL.md §0 治理权威块——稳定内核核对逐字、高频演进条款（R13 摘要）核对是否过时、阶段专属确认无需变更；同步后更新 §0「内嵌对齐」锚点。
+2. **mattpocock/skills 上游**（grilling/wayfinder/to-spec/domain-modeling）：上游更新时，评估是否重新移植追问/规划/合成机制；评估结果记入 CHANGELOG。
+
+同步纪律：**未经 L 复盘或用户确认的审计修订，不 bump 版本**（对齐治理规范 §七版本化规则）。
 
 ## 依赖
 
