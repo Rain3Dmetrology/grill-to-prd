@@ -1,5 +1,5 @@
 {
-  "_comment": "grill-to-PRD v0.3.0 结构化输出 schema（agent 照此生成 prd-[name].json）。双形态：本文件为结构层，与 prd-[name].md 叙事层互为补充。",
+  "_comment": "grill-to-PRD v0.3.2 结构化输出 schema（agent 照此生成 prd-[name].json）。双形态：本文件为结构层，与 prd-[name].md 叙事层互为补充。",
   "goal": {
     "purpose": "用户原话冻结的目的（B1，不可变）",
     "in_scope": ["IN scope 条目"],
@@ -51,6 +51,36 @@
   ],
   "traceability_matrix": [
     { "requirement": "US-001", "design_element": "...", "implementation": "...", "test_gate": "G1 验收命令" }
+  ],
+  "data_objects": [
+    {
+      "id": "DO-001",
+      "name": "业务对象名",
+      "attributes": [{ "name": "字段名", "type": "string|number|boolean|enum|ref", "nullable": false, "description": "..." }],
+      "lifecycle_states": ["created", "active", "archived"],
+      "state_transitions": [
+        { "from": "created", "to": "active", "guard": "触发条件/守卫（如 审核通过）", "effect": "状态迁移副作用" }
+      ]
+    }
+  ],
+  "pipeline_constraints": [
+    {
+      "id": "PIPE-001",
+      "from": "上游模块/节点",
+      "to": "下游模块/节点",
+      "type": "sequential | parallel | conditional | fanout | join",
+      "trigger": "触发条件（如 from 返回置信度 > 0.8 后）",
+      "data_lineage": "数据流向说明（from 输出 → to 输入，字段级）"
+    }
+  ],
+  "error_personality": [
+    {
+      "id": "ERR-001",
+      "scenario": "异常场景（如 召回为空 / 接口超时 / 模型幻觉）",
+      "detection": "如何识别该异常（可观察信号）",
+      "fallback": "降级策略（具体，非「系统异常」）",
+      "recovery": "恢复路径（何时重试/告警/人工介入）"
+    }
   ],
   "open_questions": []
 }

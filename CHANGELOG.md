@@ -3,6 +3,16 @@
 All notable changes to grill-to-PRD are documented here.
 本文件名不含版本号（R1 教训），版本演进仅记录于本文件。
 
+## [v0.3.2] - 2026-08-27
+
+### Added（补装缺口① + 缺口②，源自 PRD skill 选型调研落地方案）
+- **缺口① 程序化 PRD 校验门禁**：`scripts/prd_validate.py`（零依赖纯标准库）——四维检查（目标可量化性 25 / 边界清晰度 25 / 测试缝隙 25 / 技术合规性 25）+ 0-100 评分 + 逐条修复指令（"错误信息=修复指令"）。评分 ≥80 才流转下游（对齐 Google 方案一阶段三，平台无关版）；技术合规性默认 WARN 扣分（日常检索友好，白名单含开发基础设施+搜索引擎），加 `--compliance-strict` 升级为 HARD-FAIL 硬门禁。支持 prd-*.json（逐字段断言）与 prd-*.md（启发式）双输入，含 --self-test。
+- **缺口② 面向 Agent 的三模块**：`prd-schema.json` 新增 `data_objects`（实体数据字典+状态机）/ `pipeline_constraints`（Pipeline 拓扑约束）/ `error_personality`（异常降级人格）三字段；`prd-template.md` 新增十之一~十之三章节；SKILL.md §6.3 增加「面向 Agent 的三模块」说明（按需追加，非每篇硬塞）。
+
+### Notes
+- 依据：`D:\Downloads\PRD需求引导skill选型调研_终审报告_v1.0.md` 落地方案（缺口① prd_validate.py + 缺口② 三模块 schema）。
+- 三模块为按需追加：凡涉多实体状态流转/多模块依赖/AI 或搜索类异常的场景启用，简单 flat 需求可省。
+
 ## [v0.3.1] - 2026-08-26
 
 ### Changed（终局审计修复：P0/P1/P2 全量）

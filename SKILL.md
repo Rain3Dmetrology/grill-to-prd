@@ -242,6 +242,13 @@ graph 派生脚本每次启动后运行，随内容增长而非重置。**纯文
 
 **验收挂载点（v0.3.0 · seams 推广）**：代码域=测试缝隙（seam，理想=1，优先复用已有）；市场域=数据源交叉验证点（≥2 独立源）；生活域=关键检查点（验收命令的挂载位置）。每门 G 的验收命令必须挂在一个明确的验收挂载点上。
 
+**面向 Agent 的三模块（v0.3.2 · 供下游调研/架构 Agent 无歧义消费）**：在 11 节基础上，凡涉及「多实体状态流转 / 多模块依赖 / AI/搜索类异常」的场景，追加三个结构化区块（schema 见 `templates/prd-schema.json`，模板见 `prd-template.md` 十之一~十之三）：
+1. **`data_objects` 实体数据字典+状态机**：属性 + 生命周期状态 + 合法状态转移矩阵 → 架构 Agent 直接转数据库模型/状态机代码。
+2. **`pipeline_constraints` Pipeline 拓扑约束**：模块间前后置依赖（pre-requisites）、时序约束（sequential/parallel/conditional）、数据流向（data_lineage）→ 下游 Agent 识别执行顺序与触发条件。
+3. **`error_personality` 异常降级人格**：针对「召回为空/接口超时/模型幻觉」定义检测信号 + 降级策略 + 恢复路径 → 替代「系统异常」空话。
+
+> 三模块是**按需追加**（非每篇硬塞）：简单 flat 需求可省，凡下游是 agent、且需求含状态机/多模块依赖/AI 异常时才启用。是否启用由 to-spec 合成时按场景判定。
+
 ### 6.4 下游衔接（边界止于此）
 
 - 软件开发场景：可续 to-tickets（tracer-bullet 任务拆分，ticket 声明依赖；**需求追踪矩阵 REQ→Design→Impl→Tests 作为 to-tickets 的上游输入**）。
@@ -300,6 +307,7 @@ graph 派生脚本每次启动后运行，随内容增长而非重置。**纯文
 **原则（源自 vibeguard"错误信息=修复指令"）**：机检拦截不单纯报错，必须给出修复指令让 agent 自我纠正。
 
 - **截断机检**：`scripts/truncation_lint.py`（R13 兜底，零依赖）
+- **程序化 PRD 校验门禁**：`scripts/prd_validate.py`（v0.3.2 新增，零依赖）——四维检查（目标可量化性/边界清晰度/测试缝隙/技术合规性）+ 0-100 评分 + 修复指令；评分 ≥80 才流转下游（对齐 Google 方案一阶段三，平台无关版）。用法：`python prd_validate.py prd-[name].json [--threshold 80]`。**技术合规性默认 WARN 扣分**（日常检索友好，白名单含开发基础设施 + 搜索引擎）；熟练后加 `--compliance-strict` 升级为 HARD-FAIL 硬门禁（白名单外第三方服务引用不靠分数蒙混）。
 - **守卫三层（可选，治理敏感任务挂载）**：
   - 规则层：§0 Hard Rules + 治理规范硬规则（session 开始注入）
   - 钩子层：暂停线停机快照、全绿≠完成（Stop 提醒）、假进展防呆（持续读取不行动则强制给出下一步）
@@ -320,5 +328,7 @@ graph 派生脚本每次启动后运行，随内容增长而非重置。**纯文
 - [ ] Hard Rules 三条无违反（No Vague Metrics / Problem Before Solution / INVEST）
 - [ ] goal 全部可量化（Hard Rule 1）
 - [ ] 输出双形态（md + json）
+- [ ] 面向 Agent 三模块按需追加（data_objects / pipeline_constraints / error_personality，凡涉状态机/多模块依赖/AI 异常）
+- [ ] 程序化校验门禁通过（`prd_validate.py prd.json --threshold 80`；技术合规性默认 WARN，治理敏感任务加 `--compliance-strict`）
 - [ ] 台账落盘（ledger.md + ledger.json）
 - [ ] 无截断标记（可跑 `scripts/truncation_lint.py` 自检）
