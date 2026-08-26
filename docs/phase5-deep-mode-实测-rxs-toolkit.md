@@ -1,7 +1,7 @@
 # grill-to-PRD Deep 实测：rxs-toolkit（Phase 5 真正目标仓库）
 
 **实测目的**：对 Phase 5 真正目标仓库做有代码在盘取证，验证领域名词关系图 + 不可逆抉择 ADR + 验收门沉淀，并对账 memory 假设。
-**代码源**：`https://github.com/rxsvision/rxs-toolkit.git`（已 clone 至 D:\Downloads\rxs-toolkit）
+**代码源**：`https://github.com/rxsvision/rxs-toolkit.git`（已 clone 至本地）
 **工具链**：grep/Read 取证（E1）+ `scripts/graph_derive.py` + ADR 三触发判据
 **日期**：2026-08-25
 

@@ -10,7 +10,7 @@ All notable changes to grill-to-PRD are documented here.
 - **缺口② 面向 Agent 的三模块**：`prd-schema.json` 新增 `data_objects`（实体数据字典+状态机）/ `pipeline_constraints`（Pipeline 拓扑约束）/ `error_personality`（异常降级人格）三字段；`prd-template.md` 新增十之一~十之三章节；SKILL.md §6.3 增加「面向 Agent 的三模块」说明（按需追加，非每篇硬塞）。
 
 ### Notes
-- 依据：`D:\Downloads\PRD需求引导skill选型调研_终审报告_v1.0.md` 落地方案（缺口① prd_validate.py + 缺口② 三模块 schema）。
+- 依据：《PRD需求引导skill选型调研_终审报告_v1.0》落地方案（缺口① prd_validate.py + 缺口② 三模块 schema）。
 - 三模块为按需追加：凡涉多实体状态流转/多模块依赖/AI 或搜索类异常的场景启用，简单 flat 需求可省。
 
 ## [v0.3.1] - 2026-08-26
@@ -53,7 +53,7 @@ All notable changes to grill-to-PRD are documented here.
 
 ### Notes
 - v0.4.0 候选架构（规划未实施）：skill-router 形态（routing.json 结构化路由 + 173 用例式回归基准 + field-journal 经验库）——源自 reverse-skill 范式
-- 诊断与洞察报告：`D:\Downloads\grill-to-PRD追问机制诊断与v0.3.0升级建议_2026-08-26.md`、`D:\Downloads\grill-to-PRD五资产对照调研与v0.3.0增补洞察_2026-08-26.md`
+- 诊断与洞察报告：《grill-to-PRD追问机制诊断与v0.3.0升级建议_2026-08-26》《grill-to-PRD五资产对照调研与v0.3.0增补洞察_2026-08-26》
 
 ## [v0.2.1] - 2026-08-25
 

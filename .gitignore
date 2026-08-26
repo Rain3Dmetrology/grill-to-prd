@@ -10,3 +10,21 @@ Thumbs.db
 
 # Logs
 *.log
+
+# Secrets & credentials（隐私阻断门禁：禁止凭据/密钥入仓）
+.env
+.env.*
+*.key
+*.pem
+credentials*
+*secret*
+*secrets*
+*.token
+*.apikey
+*api_key*
+local_*_paths*
+*.local.*
+
+# Local config
+*.local.json
+*.local.yaml

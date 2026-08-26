@@ -1,7 +1,7 @@
 # grill-to-PRD Deep 实测（有代码在盘）：rxs-cc-plugins 命名空间与 API 对齐盘点
 
 **实测目的**：补跑"有代码在盘"的 Deep 模式，验证 fact 取证闭环 + 沉淀领域名词关系图与不可逆抉择。
-**代码源**：`https://github.com/rxsvision/rxs-cc-plugins.git`（已 clone 至 D:\Downloads\rxs-cc-plugins）
+**代码源**：`https://github.com/rxsvision/rxs-cc-plugins.git`（已 clone 至本地）
 **工具链**：grep 取证（E1）+ `scripts/graph_derive.py` 派生 + ADR 三触发判据 + 验收门 G1-G3
 **日期**：2026-08-25
 

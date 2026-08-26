@@ -33,8 +33,10 @@ grill-to-PRD = 统一入口 + 治理胶水（B1-B7 台账 / G1-G3 验收门 / E0
 
 > 深度/快速是**追问强度分级**，与领域无关；领域差异一律走适配层。
 
-## 核心能力（v0.3.1）
+## 核心能力（v0.3.2）
 
+- **程序化 PRD 校验门禁（v0.3.2）**：`scripts/prd_validate.py`（零依赖）——四维检查（目标可量化性/边界清晰度/测试缝隙/技术合规性）+ 0-100 评分 + 修复指令；评分 ≥80 才流转下游；技术合规性默认 WARN，`--compliance-strict` 升级 HARD-FAIL 硬门禁
+- **面向 Agent 三模块（v0.3.2）**：`prd-schema.json` 增 `data_objects`（实体数据字典+状态机）/ `pipeline_constraints`（Pipeline 拓扑约束）/ `error_personality`（异常降级人格）——供下游调研/架构 Agent 无歧义消费需求结构关系、优先级与 pipeline 约束（按需追加）
 - **分层内嵌治理（v0.3.1）**：§0 治理权威块分三层——稳定内核逐字内嵌（B1/B2/E0-E3/三态/R4/R7/Hard Rules）/ 高频演进条款引用摘要（R13 a-g 全条款）/ 阶段专属机制引用指向（R9 心跳/确认分级/触顶上报/M1-M11 由下游承担，防范围蔓延）
 - **追问质量三 Hard Rules**：No Vague Metrics（指标必须可量化）/ Problem Before Solution（先定义问题）/ INVEST Stories
 - **优先级框架**：MoSCoW / RICE / ICE / Kano + Hybrid 组合法；per-US 优先级（P0/P1/P2）+ 取舍裁决表 + goal 可量化强制
@@ -93,7 +95,7 @@ LICENSE / NOTICE.md 许可证与三方 attribution
 CHANGELOG.md        版本史（文件名去版本化，版本存此）
 install.ps1         一键安装到 WorkBuddy 技能目录（含版本漂移提示）
 references/         领域适配器（domain-adapters.md：6 个内置 + 百科型事实源模式 + 自定义模板）
-scripts/            零依赖脚本（graph_derive.py · truncation_lint.py）
+scripts/            零依赖脚本（prd_validate.py · graph_derive.py · truncation_lint.py）
 templates/          输出模板（prd-template.md · prd-schema.json · 自测样例×2）
 docs/               实测与验证记录（含 v0.3.0 升级自审报告）
 ```
