@@ -85,34 +85,47 @@ def validate_schema_profile(value: Any, schema: dict[str, Any], path: str = "$")
 def semantic_errors(doc: dict[str, Any]) -> list[str]:
     errors: list[str] = []
     for name in COLLECTIONS:
+        values = doc.get(name, [])
+        if not isinstance(values, list):
+            continue  # the structural validator reports the type mismatch
         seen: set[str] = set()
-        for index, item in enumerate(doc.get(name, [])):
-            if not isinstance(item, dict) or not item.get("id"):
+        for index, item in enumerate(values):
+            if not isinstance(item, dict):
                 continue
-            item_id = item["id"]
+            item_id = item.get("id")
+            if not isinstance(item_id, str) or not item_id:
+                continue
             if item_id in seen:
                 errors.append(f"$.{name}[{index}].id: duplicate ID {item_id!r}")
             seen.add(item_id)
 
-    for index, item in enumerate(doc.get("acceptance", [])):
-        if item.get("kind") == "human_acceptance" and item.get("gate") != "closure":
-            errors.append(f"$.acceptance[{index}]: human_acceptance must use gate='closure'")
+    acceptance = doc.get("acceptance", [])
+    if isinstance(acceptance, list):
+        for index, item in enumerate(acceptance):
+            if isinstance(item, dict) and item.get("kind") == "human_acceptance" and item.get("gate") != "closure":
+                errors.append(f"$.acceptance[{index}]: human_acceptance must use gate='closure'")
 
     if doc.get("status") == "ready_for_plan":
         confirmation = doc.get("user_confirmation", {})
         if not isinstance(confirmation, dict) or confirmation.get("consensus_confirmed") is not True:
             errors.append("$.user_confirmation.consensus_confirmed: must be true for ready_for_plan")
+        questions = doc.get("open_questions", [])
         blockers = [
             q.get("id", f"index-{i}")
-            for i, q in enumerate(doc.get("open_questions", []))
+            for i, q in enumerate(questions if isinstance(questions, list) else [])
             if isinstance(q, dict) and q.get("blocking") is True and q.get("status") == "open"
         ]
         if blockers:
             errors.append("$.open_questions: blocking questions remain open: " + ", ".join(blockers))
 
-    for index, adr in enumerate(doc.get("adrs", [])):
-        if isinstance(adr, dict) and adr.get("status") == "accepted" and len(adr.get("alternatives", [])) < 2:
-            errors.append(f"$.adrs[{index}].alternatives: accepted ADR requires at least two considered alternatives")
+    adrs = doc.get("adrs", [])
+    if isinstance(adrs, list):
+        for index, adr in enumerate(adrs):
+            if not isinstance(adr, dict) or adr.get("status") != "accepted":
+                continue
+            alternatives = adr.get("alternatives", [])
+            if not isinstance(alternatives, list) or len(alternatives) < 2:
+                errors.append(f"$.adrs[{index}].alternatives: accepted ADR requires at least two considered alternatives")
     return errors
 
 
@@ -175,7 +188,8 @@ def validate_file(path: Path, schema_path: Path) -> dict[str, Any]:
         result["errors"].append(f"Validator/schema profile error: {exc}")
         return result
     result["errors"].extend(semantic_errors(doc))
-    result["warnings"].extend(quality_warnings(doc))
+    if not result["errors"]:
+        result["warnings"].extend(quality_warnings(doc))
     result["status"] = "PASS" if not result["errors"] else "FAIL"
     return result
 
@@ -205,12 +219,29 @@ def self_test(schema_path: Path) -> int:
     ready = json.loads(json.dumps(base))
     ready["status"] = "ready_for_plan"
     case("ready-requires-user-consensus", ready, "FAIL")
+
+    confirmed_with_blocker = json.loads(json.dumps(base))
+    confirmed_with_blocker["status"] = "ready_for_plan"
+    confirmed_with_blocker["user_confirmation"] = {"consensus_confirmed": True}
+    confirmed_with_blocker["open_questions"][0]["blocking"] = True
+    case("ready-rejects-open-blocker", confirmed_with_blocker, "FAIL")
+
     duplicate = json.loads(json.dumps(base))
     duplicate["acceptance"].append(dict(duplicate["acceptance"][0]))
     case("duplicate-acceptance-id", duplicate, "FAIL")
+
     wrong_gate = json.loads(json.dumps(base))
     wrong_gate["acceptance"][0]["gate"] = "verification"
     case("human-acceptance-requires-closure", wrong_gate, "FAIL")
+
+    bad_adr = json.loads(json.dumps(base))
+    bad_adr["adrs"] = [{"id":"ADR-1","title":"Choice","context":"Context","decision":"Selected","alternatives":["A"],"status":"accepted"}]
+    case("accepted-adr-needs-two-options", bad_adr, "FAIL")
+
+    malformed_collection = json.loads(json.dumps(base))
+    malformed_collection["facts"] = None
+    case("malformed-input-never-crashes", malformed_collection, "FAIL")
+
     ok = True
     for name, expected, actual, errors in cases:
         passed = expected == actual
