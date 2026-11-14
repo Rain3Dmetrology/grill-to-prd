@@ -11,11 +11,13 @@
 | `SKILL.md` | P0 | 删除复制的 v2.3 权威块；声明 Skill=Guidance；区分需求共识、计划冻结、执行授权和 human closure；允许 Draft 与 ready_for_plan 两种状态 | 不再把 B1-B7/R4/R7/E0-E3/G1-G3 宣称为规范控制；Skill 不承担执行生命周期 |
 | `references/harness-interop.md` | P0 | 新增 PRD → Harness v3.1.1 字段映射与权限边界 | 目标、范围、验收、事实、假设、人工接受均有映射；不声称 PRD 可授权执行 |
 | `templates/prd-schema.json` | P0 | 变为 Draft 2020-12 JSON Schema | 标准 schema 可被通用 JSON Schema 工具读取；必填字段和字段类型明确 |
-| `scripts/prd_validate.py` | P0 | 删除评分覆盖 FAIL 的行为；结构/语义错误硬失败；quality warnings 不阻断 | 自测覆盖 Draft 未决问题允许、缺共识的 ready_for_plan 拒绝、重复 ID 拒绝、human_acceptance 必须 closure |
+| `scripts/prd_validate.py` | P0 | 删除评分覆盖 FAIL 的行为；结构/语义错误硬失败；quality warnings 不阻断；防御 malformed collections | 自测覆盖 Draft 未决问题允许、缺共识/有阻塞项的 ready_for_plan 拒绝、重复 ID 拒绝、human_acceptance 必须 closure、已接受 ADR 至少两个备选 |
 | `templates/prd-template.md` | P1 | 移除固定三验收门、≥10 stories、强制 ledger；Markdown 默认 | 简单任务可裁剪；验收类型与 closure 分离 |
-| `references/domain-adapters.md` | P1 | 将 source allowlist 限定为来源可信度指导 | 不把来源域名描述成网络或供应商权限 |
+| `references/domain-adapters.md` | P1 | 将 source allowlist 限定为来源适用性指导 | 不把来源列表描述成网络或供应商权限；保留领域事实源选择能力 |
+| `scripts/graph_derive.py` | P1 | 兼容 schema 1.0 的 facts/requirements/acceptance/assumptions/decisions/open_questions/relations；保留旧输入只读兼容 | flat 视图覆盖当前核心需求字段；graph 只读取显式 relations，不声称自动发现关系 |
+| `docs/phase5-factcheck.json` | 兼容性说明 | 保留为历史 v0.3.x 记录，不自动改写 | 历史记录不被误当作 schema 1.0 fixture；需迁移后方可用于当前 validator |
 | `README.md` / `CHANGELOG.md` | P1 | 同步治理边界、默认输出、validator 语义与 Unreleased 记录 | 不再声称旧 v2.3 是执行权威或评分≥80即可放行 |
-| `templates/*sample*.json` | P1 | 迁移示例至 schema_version 1.0；旧事实标记 unverified | 样例通过新 validator；历史事实不伪装为当前证据 |
+| `templates/*sample*.json` | P1 | 迁移示例至 schema_version 1.0；旧事实标记 unverified，迁移注记放入 `extensions` | 样例符合当前 root schema；历史事实不伪装为当前证据 |
 
 ## P0/P1 顺序
 
@@ -27,4 +29,4 @@
 
 ## 验收边界
 
-Validator self-test 只证明脚本逻辑覆盖列出的用例，不证明完整 JSON Schema Draft 2020-12 实现、Codex 发现行为或 Harness C1/C2 合规。完整 schema 兼容性需由通用 Draft 2020-12 validator 独立验证。
+Validator self-test 只证明脚本逻辑覆盖列出的用例，不证明完整 JSON Schema Draft 2020-12 实现、Codex 发现行为或 Harness C1/C2 合规。仓库 validator 只实现 README 明示的 JSON Schema 关键字子集；完整 schema 兼容性需由通用 Draft 2020-12 validator 独立验证。旧版 `docs/phase5-factcheck.json` 保留其历史语境，不属于当前 schema 1.0 回归夹具。

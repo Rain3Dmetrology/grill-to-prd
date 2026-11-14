@@ -1,62 +1,95 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""graph_derive.py — 从 prd.json 派生 flat/graph 两种视图（零依赖，仅标准库）
+"""Derive flat facts/requirements and an explicit relationship graph from a PRD JSON.
 
-配套 grill-to-PRD skill。核心思想（Memex 理念）：
-  数据保持纯 JSON + Markdown，就完全属于你；不需要图引擎/框架。
-  要一个「事实」→ flat list；要发掘「关系」→ graph（边列表）。
-  每次启动后运行本脚本，graph 随内容增长，而非重置。
-
-用法:
-  python graph_derive.py <prd.json> [--mode flat|graph|both] [--format json|mermaid]
+The script does not discover hidden relations. It only renders information
+already present in the PRD artifact.
 """
 import argparse
 import json
 import sys
 
 
-def load(path):
-    with open(path, encoding="utf-8") as f:
-        return json.load(f)
-
-
 def flat(doc):
-    """事实视图：facts + constraints + gates 的清单。"""
+    """Create a readable inventory from the current PRD schema, plus legacy inputs."""
     out = []
-    for f in doc.get("facts", []):
-        out.append({"id": f.get("id"), "statement": f.get("statement"), "evidence": f.get("evidence", "E0")})
-    for c in doc.get("constraints", []):
-        out.append({"id": c.get("id"), "statement": c.get("statement"), "evidence": c.get("evidence", "E0")})
+
+    def add_items(key, category, fields):
+        values = doc.get(key, [])
+        if not isinstance(values, list):
+            return
+        for item in values:
+            if not isinstance(item, dict):
+                continue
+            row = {"id": item.get("id"), "category": category}
+            for field in fields:
+                if field in item:
+                    row[field] = item[field]
+            out.append(row)
+
+    goal = doc.get("goal", {})
+    if isinstance(goal, dict):
+        for item in goal.get("success_criteria", []) if isinstance(goal.get("success_criteria", []), list) else []:
+            if isinstance(item, dict):
+                out.append({"id": item.get("id"), "category": "success_criterion",
+                            "statement": item.get("statement"), "method": item.get("method")})
+
+    add_items("facts", "fact", ["statement", "status", "source", "limitations"])
+    requirements = doc.get("requirements", {})
+    if isinstance(requirements, dict):
+        for key, category in (("functional", "functional_requirement"), ("non_functional", "non_functional_requirement")):
+            for item in requirements.get(key, []) if isinstance(requirements.get(key, []), list) else []:
+                if isinstance(item, dict):
+                    out.append({"id": item.get("id"), "category": category,
+                                "statement": item.get("statement"), "priority": item.get("priority")})
+    add_items("acceptance", "acceptance", ["statement", "verification_method", "expected_result", "kind", "gate", "required"])
+    add_items("assumptions", "assumption", ["statement", "status", "impact", "validation_method"])
+    add_items("decisions", "decision", ["question", "chosen_option", "status", "decision_owner"])
+    add_items("open_questions", "open_question", ["question", "blocking", "owner", "status"])
+
+    # Backward-compatible read support for v0.3.x artifacts.
+    add_items("constraints", "legacy_constraint", ["statement", "evidence"])
+    add_items("gates", "legacy_gate", ["definition", "acceptance_command", "evidence_level", "status"])
     return out
 
 
 def graph(doc):
-    """关系视图：relations 边列表（术语↔抉择↔约束↔验收门）。"""
-    return doc.get("relations", [])
+    """Return explicitly authored relations only."""
+    edges = doc.get("relations", [])
+    return edges if isinstance(edges, list) else []
 
 
 def to_mermaid(edges):
     lines = ["graph LR"]
-    for e in edges:
-        a = e.get("from", "?").replace(" ", "_")
-        b = e.get("to", "?").replace(" ", "_")
-        t = e.get("type", "link")
-        label = {"depends_on": "-->", "constrained_by": "-.->",
-                 "locked_by": "==>", "relates": "---"}.get(t, "-->")
-        lines.append(f'    {a} {label}|{t}| {b}')
+    operators = {
+        "depends_on": "-->",
+        "constrained_by": "-.->",
+        "locked_by": "==>",
+        "relates": "---",
+        "supports": "==>",
+        "contradicts": "-.->",
+    }
+    for edge in edges:
+        if not isinstance(edge, dict):
+            continue
+        source = str(edge.get("from", "?")).replace(" ", "_")
+        target = str(edge.get("to", "?")).replace(" ", "_")
+        relation = str(edge.get("type", "relates"))
+        lines.append(f"    {source} {operators.get(relation, '-->')}|{relation}| {target}")
     return "\n".join(lines)
 
 
 def main(argv=None):
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8", errors="replace")
-    ap = argparse.ArgumentParser(description="grill-to-PRD flat/graph 派生（零依赖）")
-    ap.add_argument("prd_json", help="prd-[name].json 路径")
-    ap.add_argument("--mode", choices=["flat", "graph", "both"], default="both")
-    ap.add_argument("--format", choices=["json", "mermaid"], default="json")
-    args = ap.parse_args(argv)
-    doc = load(args.prd_json)
+    parser = argparse.ArgumentParser(description="Derive PRD flat/graph views (stdlib only).")
+    parser.add_argument("prd_json", help="Path to prd-[name].json")
+    parser.add_argument("--mode", choices=["flat", "graph", "both"], default="both")
+    parser.add_argument("--format", choices=["json", "mermaid"], default="json")
+    args = parser.parse_args(argv)
 
+    with open(args.prd_json, encoding="utf-8") as stream:
+        doc = json.load(stream)
     result = {}
     if args.mode in ("flat", "both"):
         result["flat"] = flat(doc)
@@ -68,14 +101,14 @@ def main(argv=None):
         print(json.dumps(result, ensure_ascii=False, indent=2))
     else:
         if "flat" in result:
-            print("## flat (facts)")
-            for f in result["flat"]:
-                print(f'- [{f.get("evidence")}] {f.get("statement")}')
+            print("## flat (requirements and facts)")
+            for item in result["flat"]:
+                print(f"- [{item.get('category')}] {item.get('id')}: {item.get('statement') or item.get('question') or ''}")
         if "graph" in result:
-            print("\n## graph (relations)")
+            print("\n## graph (explicit relations)")
             print(result["graph"])
     return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    raise SystemExit(main())

@@ -89,5 +89,7 @@
       "status": "open"
     }
   ],
-  "_migration_note": "Migrated from the legacy v0.3.2 sample shape. Historical facts are deliberately marked unverified; refresh before relying on them."
+  "extensions": {
+    "legacy_migration_note": "Migrated from the legacy v0.3.2 sample shape. Historical facts are deliberately marked unverified; refresh before relying on them."
+  }
 }
