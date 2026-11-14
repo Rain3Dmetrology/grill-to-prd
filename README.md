@@ -6,7 +6,7 @@
 
 ## English
 
-Translate vague intent into structured PRDs. The core is not "writing docs" — it is **nailing down assumptions, acceptance gates, boundaries and priorities before any work starts**. Follows the Human-Machine Collaboration Loop Governance Spec v2.3.
+Translate vague intent into structured PRDs. The core is not "writing docs" — it is **nailing down assumptions, acceptance gates, boundaries and priorities before any work starts**. Runs as a requirements-intake Skill; execution authority comes from Harness LOOP Specification v3.1.1.
 
 **Domain-agnostic**: software development, product planning, market/business, tech/model selection, daily life — also serves as the requirement entry for expert teams.
 
@@ -18,7 +18,7 @@ Translate vague intent into structured PRDs. The core is not "writing docs" — 
 | Market research | "Use grill-to-PRD to clarify the scope and acceptance gates of [research topic]" |
 | Life decision | "Use grill-to-PRD to plan [task]: goal, boundary, what counts as success" |
 
-Routing: complex → **Deep mode** (multi-round grilling → frontier-empty proof → PRD); simple → **Fast mode** (3-5 lettered options → slim PRD); oversized task → **wayfinder planning** first. Output is always dual-form: `prd-*.md` + `prd-*.json`.
+Routing: complex → **Deep mode** (multi-round grilling → frontier-empty proof → PRD); simple → **Fast mode** (3-5 lettered options → slim PRD); oversized task → **wayfinder planning** first. Output defaults to `prd-*.md`; emit `prd-*.json` only when structured downstream consumption requires it.
 
 ### Three-Stage Architecture (aligned with mattpocock/skills)
 
@@ -42,7 +42,7 @@ grill-to-PRD = unified entry + governance glue (B1-B7 ledger / G1-G3 gates / E0-
 
 ### Key Capabilities (v0.3.2)
 
-- **Programmatic PRD validation gate (v0.3.2)**: `scripts/prd_validate.py` (zero-dependency) — 4-dimension checks (measurable goals / boundary clarity / test seams / tech compliance) + 0-100 scoring + fix instructions; only scores ≥80 flow downstream; tech compliance defaults to WARN, `--compliance-strict` upgrades to HARD-FAIL blocking gate
+- **Programmatic PRD validation gate (v0.3.2)**: `scripts/prd_validate.py` (zero-dependency) — Draft 2020-12 PRD structure plus semantic checks; structural/semantic FAIL always blocks, while quality notices remain WARN and cannot be masked by a numeric score. The validator does not grant vendor or tool permissions
 - **Agent-facing triple modules (v0.3.2)**: `prd-schema.json` adds `data_objects` (entity dictionary + state machine) / `pipeline_constraints` (pipeline topology) / `error_personality` (exception fallback personality) — lets downstream research/architecture agents unambiguously consume requirement structure, priority and pipeline constraints (opt-in)
 - **Layered embedded governance (v0.3.1)**: stable core verbatim / frequently-evolving clauses summarized / stage-specific rules delegated downstream
 - **Three Hard Rules on question quality**: No Vague Metrics / Problem Before Solution / INVEST Stories
@@ -70,19 +70,19 @@ powershell -ExecutionPolicy Bypass -File .\install.ps1 -Target "<your-skills-dir
 
 Atomic replace (temp dir + atomic rename + rollback). Version-drift printout on every install; re-run install.ps1 after upgrades. Or copy the folder manually — scripts use relative paths (platform-neutral).
 
-### Maintenance Contract
+### Governance Boundary
 
-Two external living documents require manual sync after their bumps: ① Governance Spec v2.3 (re-check §0 embedded anchors), ② mattpocock/skills upstream (re-evaluate porting). Version bump without L-review or user confirmation is forbidden.
+The execution authority is Harness LOOP Specification v3.1.1. Update the pinned reference and field mapping when the normative spec changes; do not duplicate its control text in this Skill. Version bump without L-review or user confirmation is forbidden.
 
 ### License
 
-MIT. Third-party attribution in `NOTICE.md`. Zero runtime dependencies (Python stdlib only).
+MIT. Third-party attribution in `NOTICE.md`. The validator uses Python's standard library and a documented subset of JSON Schema Draft 2020-12 keywords.
 
 ---
 
 ## 中文
 
-把模糊意图翻译成结构化 PRD。核心不是写文档，而是**动手前把话说透、把假设暴露、把验收门钉死、把边界收敛、把优先级排清**。遵守《人机协作 Loop 治理规范》v2.3。
+把模糊意图翻译成结构化 PRD。核心不是写文档，而是**动手前把话说透、把假设暴露、把验收门钉死、把边界收敛、把优先级排清**。执行治理以《Harness LOOP Specification v3.1.1》为准；本 Skill 仅负责需求入口。
 
 **通用定位**：**域无关**的需求引导引擎——软件开发、产品规划、市场商业、技术/模型选型、日常生活任意场景，也可作为专家/专家团的需求入口。
 
@@ -94,7 +94,7 @@ MIT. Third-party attribution in `NOTICE.md`. Zero runtime dependencies (Python s
 | 市场调研 | "帮我用 grill-to-PRD 把 [调研主题] 的需求边界和验收门理清楚" |
 | 生活决策 | "用 grill-to-PRD 帮我规划 [事项]，要目标、边界、怎么算成功" |
 
-触发后自动路由：复杂任务走**深度模式**（多轮追问 → frontier 空证明 → PRD），简单任务走**快速模式**（3-5 问字母选项 → 精简 PRD），超长任务先走 **wayfinder 规划**。产出均为 `prd-*.md` + `prd-*.json` 双形态。
+触发后自动路由：复杂任务走**深度模式**（多轮追问 → frontier 空证明 → PRD），简单任务走**快速模式**（3-5 问字母选项 → 精简 PRD），超长任务先走 **wayfinder 规划**。默认产出 `prd-*.md`；仅在下游需要结构化消费时生成 `prd-*.json`。
 
 ### 三段式架构（对齐 mattpocock/skills）
 
@@ -118,7 +118,7 @@ grill-to-PRD = 统一入口 + 治理胶水（B1-B7 台账 / G1-G3 验收门 / E0
 
 ### 核心能力（v0.3.2）
 
-- **程序化 PRD 校验门禁（v0.3.2）**：`scripts/prd_validate.py`（零依赖）——四维检查（目标可量化性/边界清晰度/测试缝隙/技术合规性）+ 0-100 评分 + 修复指令；评分 ≥80 才流转下游；技术合规性默认 WARN，`--compliance-strict` 升级 HARD-FAIL 硬门禁
+- **程序化 PRD 校验门禁（v0.3.2）**：`scripts/prd_validate.py`（零依赖）——Draft 2020-12 结构与语义检查；结构性/语义 FAIL 必须阻断，质量建议仅为 WARN，不能用评分掩盖硬失败。校验器不授予供应商或工具权限
 - **面向 Agent 三模块（v0.3.2）**：`prd-schema.json` 增 `data_objects`（实体数据字典+状态机）/ `pipeline_constraints`（Pipeline 拓扑约束）/ `error_personality`（异常降级人格）——供下游调研/架构 Agent 无歧义消费需求结构关系、优先级与 pipeline 约束（按需追加）
 - **分层内嵌治理（v0.3.1）**：稳定内核逐字内嵌 / 高频演进条款摘要 / 阶段专属机制由下游承担（防范围蔓延）
 - **追问质量三 Hard Rules**：No Vague Metrics（可量化）/ Problem Before Solution（先问题后方案）/ INVEST Stories
@@ -146,10 +146,10 @@ powershell -ExecutionPolicy Bypass -File .\install.ps1 -Target "<你的技能目
 
 原子替换（临时目录 + 原子改名 + 失败回滚）。每次安装打印版本漂移提示；升级后重跑 install.ps1 即同步。也可手动复制目录——脚本相对路径调用，平台无关。
 
-### 维护契约
+### 治理边界
 
-两个外部活文档 bump 后须手动同步：① 《治理规范》v2.3（复核 §0 内嵌锚点）；② mattpocock/skills 上游（评估是否重新移植）。未经 L 复盘或用户确认不 bump 版本。
+执行权威为 Harness LOOP Specification v3.1.1。规范升级时更新固定版本引用与字段映射；不得在本 Skill 中重复维护规范控制正文。未经 L 复盘或用户确认不 bump 版本。
 
 ### 许可证
 
-MIT，第三方 attribution 见 `NOTICE.md`。零运行时依赖（脚本仅 Python 标准库）。
+MIT，第三方 attribution 见 `NOTICE.md`。校验器仅使用 Python 标准库，支持仓库明确列出的 JSON Schema Draft 2020-12 关键字子集。

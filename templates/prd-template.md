@@ -1,134 +1,70 @@
 # PRD: [需求/项目名]
 
-> 结构对齐 prd-master 11 节（按场景裁剪映射，见 SKILL.md §6.3）；优先级用 MoSCoW/RICE/Kano 框架；验收标准用 BDD Given-When-Then 或 Checklist 双格式。
+> 按任务规模裁剪。默认输出 Markdown；只有下游需要结构化消费时才生成 JSON。
+> 需求共识、计划冻结、执行授权和最终接受是不同事件，不得混用。
 
-## B1 主目标（冻结 · 不可变）
-- 目的（用户原话）：
+## 1. 目标与边界
+- 用户目的（尽量保留原意）：
 - IN scope：
 - OUT of scope：
+- 成功结果 / 可观察指标：
 
-## B2 验收门（每门附验收命令 + 验收挂载点）
-| 门 | 定义 | 验收命令 | 验收挂载点 | 最低证据 | 状态 |
-|---|---|---|---|---|---|
-| G1 单元/局部 | | | | E1 | 待办 |
-| G2 集成 | | | | E2 | 待办 |
-| G3 实机/Live | | | | E3+用户确认 | 待办 |
+## 2. 背景与问题
+- 当前问题：
+- 受影响用户/相关方：
+- 为什么现在处理：
+- 当前基线及其来源：
 
-> 验收挂载点（v0.3.0 seams 推广）：代码域=测试缝隙（seam，理想=1）；市场域=数据源交叉验证点（≥2 独立源）；生活域=关键检查点。
-
-## 结束条件三态
-- 达标即停 / 预算耗尽即停 / 最多 N 轮（默认 N=5）
-
-## 一、Executive Summary（执行摘要）
-- Problem Statement（2-3 句，从用户视角；Problem Before Solution 硬规则）
-- Proposed Solution（1-2 句）
-- Success Metrics（3-5 个可量化指标，No Vague Metrics 硬规则）
-
-## 二、Context & Background（背景）
-- 为什么现在做？（市场机会/用户痛点/生活场景背景）
-- 战略对齐 / 相关背景
-- 不做的后果
-
-## 三、Goals & Success Metrics
-### Business/User Objectives
-- 业务/用户目标（可量化）
-
-### Success Criteria（成功标准表）
-| 指标 | 当前值 | 目标值 | 测量方式 |
+## 3. 需求
+### 功能需求
+| ID | 需求 | 优先级 | 来源/理由 |
 |---|---|---|---|
-| | | | |
+| REQ-001 | | Must/Should/Could/Won't | |
 
-## 四、Target Users / Personas（目标用户/相关方）
-- 主要用户/相关方（谁受益最大）
-- 次要用户/间接受益者
-- 需求、痛点、动机（Jobs to be done）
-
-## 五、User Stories（LONG 列表 · INVEST 合规 · per-US 优先级）
-> 数量要求（v0.3.0）：≥10 条或覆盖全部功能面，极尽详尽；每条过 INVEST 检查（Independent/Negotiable/Valuable/Estimable/Small/Testable）。
-
-### [编号]: [标题]（优先级: P0/P1/P2 或 MoSCoW 类别）
-**Description:** 作为 [角色]，我想要 [能力]，以便 [收益]。
-**Acceptance Criteria（BDD Given-When-Then 或 Checklist）:**
-- [ ] Given [前置条件] / When [动作] / Then [预期结果]
-- [ ] （含 happy path + edge cases）
-
-## 六、Requirements（需求）
-### Functional Requirements（FR）
-- FR-1: ...
-### Non-Functional Requirements（NFR）
-- NFR-1: 性能/安全/可用性（全部可量化）
-
-## 七、Out of Scope（明确不做什么）
-- 明确 NOT building
-- 未来阶段考虑项
-
-## 八、执行决策 / 验证决策（v0.3.0）
-> 场景映射：代码=Implementation/Testing Decisions；市场=执行策略/验证方法；生活=实施方案/验收方式。
-
-### 执行决策（Implementation Decisions）
-- 模块/接口/架构决策（不含具体文件路径）
-- 备选方案论证（Alternatives Required：至少 2 个备选 + Pros/Cons/Decision）
-
-### 验证决策（Testing Decisions）
-- 验收挂载点 + 验证方法
-- 测试范围与先例
-
-## 九、决策记录（不可逆抉择 → ADR）
-> ADR 模板（v0.3.0 升级）：必须含备选方案论证。
-
-### ADR-XXX: [决策标题]
-- **Context**：背景与约束
-- **Decision**：决定（选哪个方案）
-- **Alternatives Considered**（≥2 备选 + Pros/Cons/Decision）
-- **Consequences**：后果与代价
-- **Status**：Proposed / Accepted / Deprecated
-
-## 十、需求追踪矩阵（v0.3.0 · 可追溯性）
-| 需求 | 设计元素 | 实现 | 测试/验收 |
-|---|---|---|---|
-| US-001 | | | G1 验收命令 |
-
-## 十之一、实体数据字典与状态机（v0.3.2 · data_objects）
-> 供架构 Agent 直接转数据库模型/状态机代码。每个业务对象定义属性、生命周期状态、合法状态转移矩阵。
-
-| 对象 | 属性（字段/类型/可空） | 生命周期状态 | 状态转移（from→to / 守卫 / 副作用） |
-|---|---|---|---|
-| DO-001 | | | |
-
-## 十之二、Pipeline 拓扑与约束声明（v0.3.2 · pipeline_constraints）
-> 显式声明功能模块间的前后置依赖、时序约束、数据流向，供下游 Agent 识别执行顺序与触发条件。
-
-| 约束 | 上游 | 下游 | 类型 | 触发条件 | 数据流向 |
-|---|---|---|---|---|---|
-| PIPE-001 | | | sequential/parallel/conditional | | |
-
-## 十之三、异常与降级处理（v0.3.2 · error_personality）
-> 针对「召回为空 / 接口超时 / 模型幻觉」等状态定义具体降级策略与恢复路径，禁止写「系统异常」空话。
-
-| 异常场景 | 识别信号 | 降级策略 | 恢复路径 |
-|---|---|---|---|
-| ERR-001 | | | |
-
-## 十一、约束与边界收敛
-| 维度 | 收敛结果 | 证据等级 |
+### 非功能需求（按需）
+| ID | 质量属性 | 可观察标准/测量方式 |
 |---|---|---|
-| 范围 | | |
-| 时间 | | |
-| 成本 | | |
-| 质量优先级排序 | | |
-| 技术/领域约束 | | E1 |
-| 兼容性 | | E1 |
-| 可验证量化 goal | | |
-| 取舍优先级（MoSCoW/RICE/Kano 裁决） | | |
-| 受信任检索域名 | | |
-| 性能/质量要求 | | E1 |
+| NFR-001 | | |
 
-## 十二、Rollout / 实施计划
-- 分阶段策略
-- 里程碑 + Feature flags/A-B（如适用）
-- 回滚计划（如适用）
+## 4. 验收条件
+| ID | 验收条件 | 验证方法 | 预期结果 | 类型 | 阶段 |
+|---|---|---|---|---|---|
+| ACC-001 | | automated_test / manual_review / benchmark / data_check / inspection / other | | deterministic / semantic / human_acceptance / physical | verification / closure |
 
-## 十三、Open Questions & Risks
-- 遗留待澄清项（open questions）
-- 风险与缓解（| 风险 | 严重度 | 可能性 | 缓解 |）
-- 对其他事项的依赖
+> 不强制 G1/G2/G3 三层。需要用户最终接受的条件单列为 human_acceptance，且属于 closure；物理/实机验证仍是独立验证证据。
+
+## 5. 已知事实、来源与假设
+| ID | 陈述 | 状态 | 来源/获取时间 | 限制 |
+|---|---|---|---|---|
+| F-001 | | observed / inferred / unverified | | |
+
+| 假设 ID | 假设 | 状态 | 影响 | 验证方式 |
+|---|---|---|---|---|
+| ASM-001 | | accepted / unverified / rejected | | |
+
+## 6. 决策与取舍
+| ID | 决策问题 | 选项 | 当前选择 | 负责人 | 状态 |
+|---|---|---|---|---|---|
+| DEC-001 | | | | user / agent / policy | open / accepted / rejected / deferred |
+
+只有长期或高影响决策才建立 ADR；确需 ADR 时，记录上下文、至少两个可行替代方案、取舍和后果。
+
+## 7. User Stories / Use Cases（按需）
+仅在使用 user-story 形式时检查 INVEST；条目数量以功能覆盖为准，不设置固定最低数量。
+
+## 8. 数据、流程与异常扩展（按需）
+- data_objects：实体、关键属性、状态及合法转移
+- pipeline_constraints：模块依赖、执行顺序和数据流
+- error_personality：异常信号、降级动作和恢复路径
+
+## 9. 范围外事项、风险与待确认问题
+- 明确不做的事项：
+- 风险及缓解：
+- 阻塞性问题：
+- 非阻塞性问题：
+
+## 10. 需求状态
+- [ ] Draft：仍有未知项，但已显式记录
+- [ ] Ready for plan：阻塞问题已解决/明确接受为假设，用户确认需求共识
+
+> Ready for plan 仅代表需求表达已确认，不代表计划已批准、TaskContract 已冻结或执行权限已授予。

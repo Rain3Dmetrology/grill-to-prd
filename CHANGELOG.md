@@ -1,7 +1,25 @@
 # Changelog
 
 All notable changes to grill-to-PRD are documented here.
-本文件名不含版本号（R1 教训），版本演进仅记录于本文件。
+本文件名不含版本号；正式版本仅在评审、回归和发布验收后更新。
+
+## [Unreleased] — PRD Intake / Harness alignment
+
+### Changed
+- Replaced the copied Human-Machine Collaboration Spec v2.3 block with a pinned authority reference to Harness LOOP Specification v3.1.1; clarified that this Skill is Guidance and does not implement lifecycle, permission, approval, budget, evidence or recovery controls.
+- Split requirements consensus, plan freeze, execution approval and human closure acceptance into distinct concepts.
+- Allowed explicit Draft PRDs with unresolved questions; only `ready_for_plan` requires user consensus and no blocking open questions.
+- Made Markdown the default artifact; structured JSON and decision/ledger extensions are conditional.
+- Removed fixed G1/G2/G3 and E0-E3 as parallel governance systems. Acceptance predicates are scenario-specific and map downstream to Harness acceptance gates.
+- Reframed domain source allowlists as evidence-source guidance, not network or vendor permission.
+- Removed numeric quality-score pass semantics. Structural and semantic errors now hard-fail; quality feedback is advisory WARN.
+
+### Added
+- Draft 2020-12 PRD JSON Schema and standard-library validator for the repository's explicitly supported schema keyword profile.
+- Harness interop mapping reference and deterministic validator self-tests.
+
+### Compatibility
+- PRD JSON shape changed to schema_version 1.0. Existing v0.3.x samples and saved PRD JSON require migration before use with the new validator. No repository release version is bumped in this PR.
 
 ## [v0.3.2] - 2026-08-27
 

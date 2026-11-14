@@ -1,30 +1,93 @@
 {
+  "schema_version": "1.0",
+  "status": "draft",
+  "mode": "deep",
+  "domain": "computer-vision",
+  "title": "Vision inspection backbone selection example",
   "goal": {
     "purpose": "为视觉检测系统选一个在线推理 backbone（自测样例）",
-    "in_scope": ["模型选型", "推理性能"],
-    "out_of_scope": ["训练", "数据标注"]
+    "in_scope": [
+      "模型选型",
+      "推理性能"
+    ],
+    "out_of_scope": [
+      "训练",
+      "数据标注"
+    ],
+    "success_criteria": [
+      {
+        "id": "SC-1",
+        "statement": "Produce a sourced, reviewable recommendation with explicit assumptions and limitations.",
+        "method": "manual_review"
+      }
+    ]
   },
-  "gates": [
-    { "id": "G1", "definition": "候选模型清单", "acceptance_command": "python graph_derive.py prd.json --mode flat", "evidence_level": "E1", "status": "done" },
-    { "id": "G2", "definition": "benchmark 交叉验证", "acceptance_command": "核对 >=2 独立 benchmark 源", "evidence_level": "E2", "status": "todo" },
-    { "id": "G3", "definition": "实机推理延迟", "acceptance_command": "实测 P95 < 200ms", "evidence_level": "E3", "status": "todo" }
+  "requirements": {
+    "functional": [],
+    "non_functional": []
+  },
+  "acceptance": [
+    {
+      "id": "ACC-1",
+      "statement": "候选模型清单",
+      "verification_method": "data_check",
+      "expected_result": "python graph_derive.py prd.json --mode flat",
+      "kind": "semantic",
+      "gate": "verification",
+      "required": true,
+      "limitations": [
+        "Migrated illustrative example; this is not evidence of a current test run."
+      ]
+    },
+    {
+      "id": "ACC-2",
+      "statement": "benchmark 交叉验证",
+      "verification_method": "data_check",
+      "expected_result": "核对 >=2 独立 benchmark 源",
+      "kind": "semantic",
+      "gate": "verification",
+      "required": true,
+      "limitations": [
+        "Migrated illustrative example; this is not evidence of a current test run."
+      ]
+    },
+    {
+      "id": "ACC-3",
+      "statement": "实机推理延迟",
+      "verification_method": "manual_review",
+      "expected_result": "实测 P95 < 200ms",
+      "kind": "human_acceptance",
+      "gate": "closure",
+      "required": true,
+      "limitations": [
+        "Migrated illustrative example; this is not evidence of a current test run."
+      ]
+    }
   ],
-  "termination": { "mode": "最多N轮", "n": 5 },
-  "priority": { "order": ["质量", "成本", "速度"], "tradeoffs": ["精度优先于成本"] },
-  "trusted_domains": ["huggingface.co", "arxiv.org"],
   "facts": [
-    { "id": "F1", "statement": "RT-DETR 存在 HF 官方模型卡", "evidence": "E1", "source": "huggingface.co" }
+    {
+      "id": "F1",
+      "statement": "RT-DETR 存在 HF 官方模型卡",
+      "status": "unverified",
+      "source": {
+        "type": "other",
+        "title": "huggingface.co"
+      },
+      "limitations": [
+        "Legacy sample claim; re-verify against current primary sources before relying on it."
+      ]
+    }
   ],
-  "constraints": [
-    { "id": "C1", "statement": "端侧设备 16GB 统一内存 → fp16 上限 ~8B", "evidence": "E1" }
+  "assumptions": [],
+  "decisions": [],
+  "open_questions": [
+    {
+      "id": "Q-1",
+      "question": "是否需要 Q4 量化",
+      "blocking": false,
+      "owner": "user",
+      "status": "open"
+    }
   ],
-  "relations": [
-    { "from": "检测 backbone", "to": "RT-DETR 选型", "type": "depends_on" },
-    { "from": "RT-DETR 选型", "to": "C1 内存约束", "type": "constrained_by" },
-    { "from": "RT-DETR 选型", "to": "G2", "type": "locked_by" }
-  ],
-  "user_stories": [
-    { "id": "US-001", "title": "在线推理", "as_a": "质检员", "i_want": "实时检测", "so_that": "不停线", "acceptance_criteria": ["P95 < 200ms"] }
-  ],
-  "open_questions": ["是否需要 Q4 量化"]
+  "_migration_note": "Migrated from the legacy v0.3.2 sample shape. Historical facts are deliberately marked unverified; refresh before relying on them."
 }
