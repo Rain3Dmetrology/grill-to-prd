@@ -1,41 +1,176 @@
 {
-  "_comment": "grill-to-PRD 市场调研样例（挂载 market 适配器）——主题：harness agent 记忆智能体 MCP/skill 热门工具盘点与选型。展示非代码领域的结构化需求引导输出形态。",
+  "schema_version": "1.0",
+  "status": "draft",
+  "mode": "deep",
+  "domain": "market",
+  "title": "Memory tools selection example",
   "goal": {
     "purpose": "盘点 2026 年网上热门的 harness agent 记忆智能体 MCP/skill 工具，做工程实践级选型推荐",
-    "in_scope": ["记忆 MCP/skill 工具盘点", "选型维度对比", "工程实践级推荐"],
-    "out_of_scope": ["自研记忆系统", "代码实现", "付费托管深度评测"]
+    "in_scope": [
+      "记忆 MCP/skill 工具盘点",
+      "选型维度对比",
+      "工程实践级推荐"
+    ],
+    "out_of_scope": [
+      "自研记忆系统",
+      "代码实现",
+      "付费托管深度评测"
+    ],
+    "success_criteria": [
+      {
+        "id": "SC-1",
+        "statement": "Produce a sourced, reviewable recommendation with explicit assumptions and limitations.",
+        "method": "manual_review"
+      }
+    ]
   },
-  "gates": [
-    { "id": "G1", "definition": "热门工具盘点完整性", "acceptance_command": "覆盖 ≥10 个工具 + 来源标注", "evidence_level": "E1", "status": "done" },
-    { "id": "G2", "definition": "多源交叉验证", "acceptance_command": "≥2 独立榜单源交叉（agentrank/freemcplab/claudemarket/mcpservers）", "evidence_level": "E2", "status": "done" },
-    { "id": "G3", "definition": "选型推荐落定", "acceptance_command": "用户确认选型 + 约束匹配", "evidence_level": "E3", "status": "pending" }
+  "requirements": {
+    "functional": [],
+    "non_functional": []
+  },
+  "acceptance": [
+    {
+      "id": "ACC-1",
+      "statement": "热门工具盘点完整性",
+      "verification_method": "data_check",
+      "expected_result": "覆盖 ≥10 个工具 + 来源标注",
+      "kind": "semantic",
+      "gate": "verification",
+      "required": true,
+      "limitations": [
+        "Migrated illustrative example; this is not evidence of a current test run."
+      ]
+    },
+    {
+      "id": "ACC-2",
+      "statement": "多源交叉验证",
+      "verification_method": "data_check",
+      "expected_result": "≥2 独立榜单源交叉（agentrank/freemcplab/claudemarket/mcpservers）",
+      "kind": "semantic",
+      "gate": "verification",
+      "required": true,
+      "limitations": [
+        "Migrated illustrative example; this is not evidence of a current test run."
+      ]
+    },
+    {
+      "id": "ACC-3",
+      "statement": "选型推荐落定",
+      "verification_method": "manual_review",
+      "expected_result": "用户确认选型 + 约束匹配",
+      "kind": "human_acceptance",
+      "gate": "closure",
+      "required": true,
+      "limitations": [
+        "Migrated illustrative example; this is not evidence of a current test run."
+      ]
+    }
   ],
-  "termination": { "mode": "达标即停", "n": 3 },
-  "priority": { "order": ["工程实践级", "成本", "速度"], "tradeoffs": ["优先开源本地优先（数据主权）而非托管"] },
-  "trusted_domains": ["github.com", "mcp.so", "官方文档", "agentrank-ai.com"],
   "facts": [
-    { "id": "F1", "statement": "serena（oraios）记忆类榜首，21K★，语义代码检索", "evidence": "E2", "source": "agentrank + freemcplab" },
-    { "id": "F2", "statement": "cognee 22K★，知识图谱记忆（ECL pipeline + remember/recall/forget/improve），Claude Code 生命周期钩子", "evidence": "E2", "source": "claudemarket + cognee.ai" },
-    { "id": "F3", "statement": "Basic Memory 3.3K★，Markdown+SQLite+wikilink，本地优先 git-friendly（= memex 理念同构）", "evidence": "E2", "source": "mcpservers + claudemarket" },
-    { "id": "F4", "statement": "engram 1.3K★，agent-agnostic Go 单二进制，SQLite+FTS5 持久会话记忆", "evidence": "E1", "source": "agentrank" },
-    { "id": "F5", "statement": "vestige 420★，FSRS-6 遗忘曲线认知记忆（29 brain modules），Rust", "evidence": "E1", "source": "agentrank" },
-    { "id": "F6", "statement": "Graphiti（Zep）时序知识图谱，追踪事实时效 + provenance", "evidence": "E1", "source": "mcpservers" },
-    { "id": "F7", "statement": "Mem0/OpenMemory 向量嵌入+Postgres，托管多用户记忆", "evidence": "E1", "source": "claudemarket" }
+    {
+      "id": "F1",
+      "statement": "serena（oraios）记忆类榜首，21K★，语义代码检索",
+      "status": "unverified",
+      "source": {
+        "type": "other",
+        "title": "agentrank + freemcplab"
+      },
+      "limitations": [
+        "Legacy sample claim; re-verify against current primary sources before relying on it."
+      ]
+    },
+    {
+      "id": "F2",
+      "statement": "cognee 22K★，知识图谱记忆（ECL pipeline + remember/recall/forget/improve），Claude Code 生命周期钩子",
+      "status": "unverified",
+      "source": {
+        "type": "other",
+        "title": "claudemarket + cognee.ai"
+      },
+      "limitations": [
+        "Legacy sample claim; re-verify against current primary sources before relying on it."
+      ]
+    },
+    {
+      "id": "F3",
+      "statement": "Basic Memory 3.3K★，Markdown+SQLite+wikilink，本地优先 git-friendly（= memex 理念同构）",
+      "status": "unverified",
+      "source": {
+        "type": "other",
+        "title": "mcpservers + claudemarket"
+      },
+      "limitations": [
+        "Legacy sample claim; re-verify against current primary sources before relying on it."
+      ]
+    },
+    {
+      "id": "F4",
+      "statement": "engram 1.3K★，agent-agnostic Go 单二进制，SQLite+FTS5 持久会话记忆",
+      "status": "unverified",
+      "source": {
+        "type": "other",
+        "title": "agentrank"
+      },
+      "limitations": [
+        "Legacy sample claim; re-verify against current primary sources before relying on it."
+      ]
+    },
+    {
+      "id": "F5",
+      "statement": "vestige 420★，FSRS-6 遗忘曲线认知记忆（29 brain modules），Rust",
+      "status": "unverified",
+      "source": {
+        "type": "other",
+        "title": "agentrank"
+      },
+      "limitations": [
+        "Legacy sample claim; re-verify against current primary sources before relying on it."
+      ]
+    },
+    {
+      "id": "F6",
+      "statement": "Graphiti（Zep）时序知识图谱，追踪事实时效 + provenance",
+      "status": "unverified",
+      "source": {
+        "type": "other",
+        "title": "mcpservers"
+      },
+      "limitations": [
+        "Legacy sample claim; re-verify against current primary sources before relying on it."
+      ]
+    },
+    {
+      "id": "F7",
+      "statement": "Mem0/OpenMemory 向量嵌入+Postgres，托管多用户记忆",
+      "status": "unverified",
+      "source": {
+        "type": "other",
+        "title": "claudemarket"
+      },
+      "limitations": [
+        "Legacy sample claim; re-verify against current primary sources before relying on it."
+      ]
+    }
   ],
-  "constraints": [
-    { "id": "C1", "statement": "本地优先 + 数据主权（不送第三方托管）", "evidence": "E1" },
-    { "id": "C2", "statement": "零/低依赖（纯文件或单二进制）", "evidence": "E1" },
-    { "id": "C3", "statement": "需处理记忆时效（staleness/recency）——避免过期事实污染", "evidence": "E1" }
+  "assumptions": [],
+  "decisions": [],
+  "open_questions": [
+    {
+      "id": "Q-1",
+      "question": "是否需要图关系记忆（cognee/Neo4j）还是纯文件（Basic Memory）？",
+      "blocking": false,
+      "owner": "user",
+      "status": "open"
+    },
+    {
+      "id": "Q-2",
+      "question": "是否接受 SQLite 索引层（Basic Memory/engram）？",
+      "blocking": false,
+      "owner": "user",
+      "status": "open"
+    }
   ],
-  "relations": [
-    { "from": "记忆工具选型", "to": "Basic_Memory", "type": "depends_on" },
-    { "from": "Basic_Memory", "to": "C1_本地优先", "type": "constrained_by" },
-    { "from": "cognee", "to": "图关系记忆", "type": "depends_on" },
-    { "from": "Graphiti", "to": "C3_记忆时效", "type": "constrained_by" },
-    { "from": "记忆工具选型", "to": "G3_选型落定", "type": "locked_by" }
-  ],
-  "user_stories": [
-    { "id": "US-001", "title": "跨会话记忆", "as_a": "锐哥", "i_want": "agent 记住项目决策与偏好", "so_that": "每次不重复澄清", "acceptance_criteria": ["跨会话可召回", "本地存储"] }
-  ],
-  "open_questions": ["是否需要图关系记忆（cognee/Neo4j）还是纯文件（Basic Memory）？", "是否接受 SQLite 索引层（Basic Memory/engram）？"]
+  "extensions": {
+    "legacy_migration_note": "Migrated from the legacy v0.3.2 sample shape. Historical facts are deliberately marked unverified; refresh before relying on them."
+  }
 }

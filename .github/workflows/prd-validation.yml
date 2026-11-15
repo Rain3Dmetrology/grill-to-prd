@@ -1,0 +1,54 @@
+name: PRD artifact validation
+
+on:
+  pull_request:
+    paths:
+      - "SKILL.md"
+      - "templates/**"
+      - "scripts/prd_validate.py"
+      - "scripts/graph_derive.py"
+      - "scripts/truncation_lint.py"
+      - ".github/workflows/prd-validation.yml"
+  push:
+    branches: [main]
+    paths:
+      - "SKILL.md"
+      - "templates/**"
+      - "scripts/prd_validate.py"
+      - "scripts/graph_derive.py"
+      - "scripts/truncation_lint.py"
+      - ".github/workflows/prd-validation.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate-prd-artifacts:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Compile validation and graph scripts
+        run: python -m py_compile scripts/prd_validate.py scripts/graph_derive.py
+
+      - name: Run validator self-tests
+        run: python scripts/prd_validate.py --self-test
+
+      - name: Run optional truncation-linter self-tests
+        run: python scripts/truncation_lint.py --self-test
+
+      - name: Validate migrated PRD examples
+        run: |
+          python scripts/prd_validate.py templates/market-sample-memory-tools.json
+          python scripts/prd_validate.py templates/sample-visual-backbone.json
+
+      - name: Exercise explicit graph derivation
+        run: |
+          python scripts/graph_derive.py templates/market-sample-memory-tools.json --mode both --format json > /tmp/prd-views.json
+          python -c "import json; d=json.load(open('/tmp/prd-views.json', encoding='utf-8')); assert 'flat' in d and 'graph' in d"
