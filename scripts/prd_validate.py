@@ -47,11 +47,44 @@ def _type_matches(value: Any, expected: str) -> bool:
     raise ValueError(f"unsupported JSON Schema type: {expected}")
 
 
-def validate_schema_profile(value: Any, schema: dict[str, Any], path: str = "$") -> list[str]:
-    errors: list[str] = []
+def validate_schema_definition(schema: Any, path: str = "$schema") -> None:
+    """Validate every schema node before validating a document.
+
+    This prevents unsupported keywords in optional properties from being
+    silently ignored merely because the corresponding property is absent.
+    """
+    if not isinstance(schema, dict):
+        raise ValueError(f"schema node at {path} must be an object")
     unknown = set(schema) - SUPPORTED_SCHEMA_KEYS
     if unknown:
         raise ValueError(f"unsupported schema keyword(s) at {path}: {', '.join(sorted(unknown))}")
+
+    valid_types = {"object", "array", "string", "boolean", "integer", "number", "null"}
+    expected = schema.get("type")
+    if expected is not None and expected not in valid_types:
+        raise ValueError(f"unsupported or invalid type at {path}: {expected!r}")
+    required = schema.get("required", [])
+    if not isinstance(required, list) or any(not isinstance(item, str) for item in required):
+        raise ValueError(f"required at {path} must be an array of strings")
+    properties = schema.get("properties", {})
+    if not isinstance(properties, dict):
+        raise ValueError(f"properties at {path} must be an object")
+    if "additionalProperties" in schema and not isinstance(schema["additionalProperties"], bool):
+        raise ValueError(f"additionalProperties at {path} must be a boolean in this validator profile")
+    for key in ("minItems", "minLength"):
+        if key in schema and (type(schema[key]) is not int or schema[key] < 0):
+            raise ValueError(f"{key} at {path} must be a non-negative integer")
+    if "enum" in schema and (not isinstance(schema["enum"], list) or not schema["enum"]):
+        raise ValueError(f"enum at {path} must be a non-empty array")
+
+    for name, child in properties.items():
+        validate_schema_definition(child, f"{path}.properties.{name}")
+    if "items" in schema:
+        validate_schema_definition(schema["items"], f"{path}.items")
+
+
+def validate_schema_profile(value: Any, schema: dict[str, Any], path: str = "$") -> list[str]:
+    errors: list[str] = []
     expected = schema.get("type")
     if expected and not _type_matches(value, expected):
         return [f"{path}: expected {expected}, got {type(value).__name__}"]
@@ -179,6 +212,11 @@ def validate_file(path: Path, schema_path: Path) -> dict[str, Any]:
     if not isinstance(schema, dict) or schema.get("$schema") != "https://json-schema.org/draft/2020-12/schema":
         result["errors"].append("Schema must declare JSON Schema Draft 2020-12.")
         return result
+    try:
+        validate_schema_definition(schema)
+    except ValueError as exc:
+        result["errors"].append(f"Invalid schema definition: {exc}")
+        return result
     if not isinstance(doc, dict):
         result["errors"].append("PRD root must be a JSON object.")
         return result
@@ -210,6 +248,7 @@ def self_test(schema_path: Path) -> int:
         }]
     }
     schema = json.loads(schema_path.read_text(encoding="utf-8"))
+    validate_schema_definition(schema)
     cases = []
     def case(name: str, doc: dict[str, Any], expected: str) -> None:
         errors = validate_schema_profile(doc, schema) + semantic_errors(doc)
@@ -262,7 +301,31 @@ def self_test(schema_path: Path) -> int:
         print(f"[{'PASS' if passed else 'FAIL'}] {name}: expected={expected}, actual={actual}")
         for error in errors:
             print(f"  - {error}")
-    print(f"SELF-TEST {'PASS' if ok else 'FAIL'} ({len(cases)} cases)")
+    schema_cases = []
+    unsupported_optional = json.loads(json.dumps(schema))
+    unsupported_optional.setdefault("properties", {})["unused_optional_probe"] = {
+        "type": "string", "pattern": "^probe$"
+    }
+    try:
+        validate_schema_definition(unsupported_optional)
+        schema_cases.append(("unsupported-keyword-in-optional-schema", False))
+    except ValueError:
+        schema_cases.append(("unsupported-keyword-in-optional-schema", True))
+
+    invalid_schema_type = json.loads(json.dumps(schema))
+    invalid_schema_type["properties"]["status"]["type"] = "string-or-maybe"
+    try:
+        validate_schema_definition(invalid_schema_type)
+        schema_cases.append(("invalid-schema-type-rejected", False))
+    except ValueError:
+        schema_cases.append(("invalid-schema-type-rejected", True))
+
+    for name, passed in schema_cases:
+        ok = ok and passed
+        print(f"[{'PASS' if passed else 'FAIL'}] {name}")
+
+    total = len(cases) + len(schema_cases)
+    print(f"SELF-TEST {'PASS' if ok else 'FAIL'} ({total} cases)")
     return 0 if ok else 1
 
 

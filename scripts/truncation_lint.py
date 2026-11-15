@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""truncation_lint.py — R13 截断标记机检（配套《人机协作 Loop 治理规范》v2.3 §六.8）
+"""Optional heuristic checks for common text truncation signals.
 
-零依赖（仅标准库）、离线安全。FAIL=已知截断标记/未闭合代码围栏/--min-lines 不达标；
+This utility is a best-effort content linter, not a normative governance
+control and not proof that content is complete. FAIL=known truncation
+markers/unclosed code fences/--min-lines not met;
 WARN=末行悬置（--strict 时升级 FAIL）。退出码 0=PASS / 1=FAIL / 2=用法错误，可作 CI 门禁。
 脚本缺失或环境无 Python 时跳过，不阻断主管线。
 
@@ -104,7 +106,7 @@ def self_test():
 def main(argv=None):
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8", errors="replace")
-    ap = argparse.ArgumentParser(description="R13 截断标记机检（零依赖，离线安全）")
+    ap = argparse.ArgumentParser(description="可选的文本截断启发式检查（零依赖，离线运行）")
     ap.add_argument("paths", nargs="*", help="文件或目录（目录递归扫 .md/.txt/.log）")
     ap.add_argument("--min-lines", type=int, default=0, help="文件最低行数门槛（可证伪的异常短）")
     ap.add_argument("--strict", action="store_true", help="WARN 也计 FAIL")
