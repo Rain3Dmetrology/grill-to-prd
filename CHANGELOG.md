@@ -15,6 +15,7 @@ All notable changes to grill-to-PRD are documented here.
 - Removed numeric quality-score pass semantics. Structural and semantic errors now hard-fail; quality feedback is advisory WARN.
 
 ### Added
+- Add a path-filtered GitHub Actions workflow for Python compilation, validator self-tests, schema 1.0 sample validation and graph derivation smoke tests.
 - Draft 2020-12 PRD JSON Schema and standard-library validator for the repository's explicitly supported schema keyword profile.
 - Harness interop mapping reference and deterministic validator self-tests.
 

@@ -220,6 +220,11 @@ def self_test(schema_path: Path) -> int:
     ready["status"] = "ready_for_plan"
     case("ready-requires-user-consensus", ready, "FAIL")
 
+    ready_confirmed = json.loads(json.dumps(base))
+    ready_confirmed["status"] = "ready_for_plan"
+    ready_confirmed["user_confirmation"] = {"consensus_confirmed": True}
+    case("ready-with-consensus-and-no-blocker", ready_confirmed, "PASS")
+
     confirmed_with_blocker = json.loads(json.dumps(base))
     confirmed_with_blocker["status"] = "ready_for_plan"
     confirmed_with_blocker["user_confirmation"] = {"consensus_confirmed": True}
@@ -237,6 +242,14 @@ def self_test(schema_path: Path) -> int:
     bad_adr = json.loads(json.dumps(base))
     bad_adr["adrs"] = [{"id":"ADR-1","title":"Choice","context":"Context","decision":"Selected","alternatives":["A"],"status":"accepted"}]
     case("accepted-adr-needs-two-options", bad_adr, "FAIL")
+
+    unknown_property = json.loads(json.dumps(base))
+    unknown_property["unexpected_control_state"] = "closed"
+    case("unknown-root-property-rejected", unknown_property, "FAIL")
+
+    no_acceptance = json.loads(json.dumps(base))
+    no_acceptance["acceptance"] = []
+    case("acceptance-list-cannot-be-empty", no_acceptance, "FAIL")
 
     malformed_collection = json.loads(json.dumps(base))
     malformed_collection["facts"] = None
